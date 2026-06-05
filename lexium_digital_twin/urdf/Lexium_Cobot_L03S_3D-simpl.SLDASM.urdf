@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="Lexium_Cobot_L03S_3D-simpl.SLDASM">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="-1.7899E-05 -0.001539 0.051105"
+        rpy="0 0 0" />
+      <mass
+        value="0.46037" />
+      <inertia
+        ixx="0.00064298"
+        ixy="9.2218E-08"
+        ixz="-3.7543E-07"
+        iyy="0.00063423"
+        iyz="-1.0799E-05"
+        izz="0.00082228" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://lexium_digital_twin/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://lexium_digital_twin/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="Link_1">
+    <inertial>
+      <origin
+        xyz="0.0010686 0.0030801 0.061147"
+        rpy="0 0 0" />
+      <mass
+        value="0.88431" />
+      <inertia
+        ixx="0.0015597"
+        ixy="-1.819E-05"
+        ixz="-2.9164E-06"
+        iyy="0.0015135"
+        iyz="-8.4142E-06"
+        izz="0.0010538" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://lexium_digital_twin/meshes/Link_1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://lexium_digital_twin/meshes/Link_1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Joint_1"
+    type="revolute">
+    <origin
+      xyz="0 0 0.08605"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="Link_1" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.14159"
+      upper="3.14159"
+      effort="100"
+      velocity="2.0" />
+  </joint>
+  <link
+    name="Link_2">
+    <inertial>
+      <origin
+        xyz="0.10898 -0.033523 0.061158"
+        rpy="0 0 0" />
+      <mass
+        value="2.3218" />
+      <inertia
+        ixx="0.0033716"
+        ixy="0.00036944"
+        ixz="3.2229E-06"
+        iyy="0.0044589"
+        iyz="-9.8419E-07"
+        izz="0.0035131" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://lexium_digital_twin/meshes/Link_2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://lexium_digital_twin/meshes/Link_2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Joint_2"
+    type="revolute">
+    <origin
+      xyz="0.016544 0.047713 0.0645"
+      rpy="1.5708 0 2.8078" />
+    <parent
+      link="Link_1" />
+    <child
+      link="Link_2" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.14159"
+      upper="3.14159"
+      effort="100"
+      velocity="2.0" />
+  </joint>
+  <link
+    name="Link_3">
+    <inertial>
+      <origin
+        xyz="-0.065507 0.11608 0.040933"
+        rpy="0 0 0" />
+      <mass
+        value="1.2033" />
+      <inertia
+        ixx="0.0031587"
+        ixy="0.0012532"
+        ixz="0.00016546"
+        iyy="0.0016453"
+        iyz="-0.0002932"
+        izz="0.0036224" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://lexium_digital_twin/meshes/Link_3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://lexium_digital_twin/meshes/Link_3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Joint_3"
+    type="revolute">
+    <origin
+      xyz="0.23513 -0.072328 -0.0035"
+      rpy="3.1416 0 3.1416" />
+    <parent
+      link="Link_2" />
+    <child
+      link="Link_3" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-3.14159"
+      upper="3.14159"
+      effort="100"
+      velocity="2.0" />
+  </joint>
+  <link
+    name="Link_4">
+    <inertial>
+      <origin
+        xyz="-0.0034014 -0.013679 0.038407"
+        rpy="0 0 0" />
+      <mass
+        value="0.4932" />
+      <inertia
+        ixx="0.00049123"
+        ixy="-4.1559E-05"
+        ixz="1.4987E-05"
+        iyy="0.0003344"
+        iyz="6.0318E-05"
+        izz="0.00047904" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://lexium_digital_twin/meshes/Link_4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://lexium_digital_twin/meshes/Link_4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Joint_4"
+    type="revolute">
+    <origin
+      xyz="-0.11206 0.19856 -0.0245"
+      rpy="-3.1416 0 0" />
+    <parent
+      link="Link_3" />
+    <child
+      link="Link_4" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-3.14159"
+      upper="3.14159"
+      effort="100"
+      velocity="2.0" />
+  </joint>
+  <link
+    name="Link_5">
+    <inertial>
+      <origin
+        xyz="-0.0053242 -0.0041798 0.038595"
+        rpy="0 0 0" />
+      <mass
+        value="0.55157" />
+      <inertia
+        ixx="0.00060841"
+        ixy="-0.00031575"
+        ixz="1.302E-05"
+        iyy="0.00076259"
+        iyz="1.0237E-05"
+        izz="0.00098198" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://lexium_digital_twin/meshes/Link_5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://lexium_digital_twin/meshes/Link_5.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Joint_5"
+    type="revolute">
+    <origin
+      xyz="-0.018336 -0.073755 0.0415"
+      rpy="-1.5708 0.34315 2.8979" />
+    <parent
+      link="Link_4" />
+    <child
+      link="Link_5" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-3.14159"
+      upper="3.14159"
+      effort="100"
+      velocity="2.0" />
+  </joint>
+  <link
+    name="Link_6">
+    <inertial>
+      <origin
+        xyz="3.8151E-05 -3.8288E-05 0.013411"
+        rpy="0 0 0" />
+      <mass
+        value="0.095133" />
+      <inertia
+        ixx="3.3473E-05"
+        ixy="1.1935E-07"
+        ixz="-5.0139E-09"
+        iyy="3.38E-05"
+        iyz="9.4323E-08"
+        izz="5.5197E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://lexium_digital_twin/meshes/Link_6.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://lexium_digital_twin/meshes/Link_6.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Joint_6"
+    type="revolute">
+    <origin
+      xyz="-0.059775 -0.046936 0.0415"
+      rpy="-1.5708 0.36234 2.2365" />
+    <parent
+      link="Link_5" />
+    <child
+      link="Link_6" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-3.14159"
+      upper="3.14159"
+      effort="100"
+      velocity="2.0" />
+  </joint>
+</robot>

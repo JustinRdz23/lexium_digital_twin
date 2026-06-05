@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<package format="3">
+
+  <name>lexium_digital_twin</name>
+  <version>1.0.0</version>
+
+  <description>
+    URDF description package for the Lexium Cobot L03S.
+    Contains URDF files, meshes, launch files, and configuration resources.
+  </description>
+
+  <maintainer email="justin@example.com">Justin</maintainer>
+
+  <license>BSD-3-Clause</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>joint_state_publisher</exec_depend>
+  <exec_depend>joint_state_publisher_gui</exec_depend>
+  <exec_depend>rviz2</exec_depend>
+  <depend>rcply</depend>
+  <depend>sensor_msgs</depend>
+  
+
+  <!-- Uncomment if using Gazebo -->
+  <!-- <exec_depend>gazebo_ros</exec_depend> -->
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+
+</package>
