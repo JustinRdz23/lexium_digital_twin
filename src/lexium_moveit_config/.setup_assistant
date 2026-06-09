@@ -1,0 +1,10 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: lexium_digital_twin
+    relative_path: urdf/Lexium_Cobot_L03S_3D-simpl.SLDASM.urdf
+  srdf:
+    relative_path: config/lexium_digital_twin.srdf
+  package_settings:
+    author_name: Justin Rdz
+    author_email: justinrdz2002@gmail.com
+    generated_timestamp: 1780944997
