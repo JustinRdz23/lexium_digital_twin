@@ -1,3 +1,4 @@
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 cmake_minimum_required(VERSION 3.8)
 project(lexium_moveit)
 
@@ -19,9 +20,6 @@ find_package(std_msgs REQUIRED)
 find_package(control_msgs REQUIRED)
 find_package(trajectory_msgs REQUIRED)
 
-find_package(moveit_core REQUIRED)
-find_package(moveit_ros_planning_interface REQUIRED)
-
 # --------------------------------------------------
 # Executable
 # --------------------------------------------------
@@ -38,15 +36,7 @@ ament_target_dependencies(
   std_msgs
   control_msgs
   trajectory_msgs
-  moveit_core
-  moveit_ros_planning_interface
 )
-
-target_link_libraries(
-  lexium_trajectory_server
-  moveit_ros_planning_interface::moveit_ros_planning_interface
-)
-
 # --------------------------------------------------
 # Install
 # --------------------------------------------------

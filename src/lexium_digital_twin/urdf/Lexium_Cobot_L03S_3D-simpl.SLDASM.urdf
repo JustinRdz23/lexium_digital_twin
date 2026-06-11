@@ -100,10 +100,10 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="0"
-      upper="360"
-      effort="0"
-      velocity="0" />
+      lower="-6.2831"
+      upper="6.2831"
+      effort="150"
+      velocity="2" />
   </joint>
 
   <!--LINK 2-->
@@ -161,10 +161,10 @@
     <axis
       xyz="0 0 -1" />
     <limit
-      lower="0"
-      upper="360"
-      effort="0"
-      velocity="0" />
+      lower="-6.2831"
+      upper="6.2831"
+      effort="150"
+      velocity="2" />
   </joint>
 
   <!--LINK 3-->
@@ -222,10 +222,10 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="0"
-      upper="360"
-      effort="0"
-      velocity="0" />
+      lower="-6.2831"
+      upper="6.2831"
+      effort="150"
+      velocity="2" />
   </joint>
 
   <!--LINK 4-->
@@ -283,10 +283,10 @@
     <axis
       xyz="0 0 -1" />
     <limit
-      lower="0"
-      upper="360"
-      effort="0"
-      velocity="0" />
+      lower="-6.2831"
+      upper="6.2831"
+      effort="150"
+      velocity="2" />
   </joint>
 
   <!--LINK 5-->
@@ -344,10 +344,10 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="0"
-      upper="360"
-      effort="0"
-      velocity="0" />
+      lower="-6.2831"
+      upper="6.2831"
+      effort="150"
+      velocity="2" />
   </joint>
 
   <!--LINK 6-->
@@ -405,9 +405,9 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="0"
-      upper="360"
-      effort="0"
-      velocity="0" />
+      lower="-6.2831"
+      upper="6.2831"
+      effort="150"
+      velocity="2" />
   </joint>
 </robot>
