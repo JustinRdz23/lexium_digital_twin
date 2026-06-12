@@ -1,0 +1,173 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro"
+       name="lexium_workcell">
+
+  <link name="world"/>
+
+  <joint name="world_to_workcell" type="fixed">
+    <parent link="world"/>
+    <child link="workcell_base"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="workcell_base">
+    <inertial>
+      <origin
+        xyz="0.0821286209105843 -0.202292287140117 -0.090977509253128"
+        rpy="0 0 0" />
+      <mass
+        value="65.2737817453562" />
+      <inertia
+        ixx="6.89021065788897"
+        ixy="-0.0029372251119718"
+        ixz="-0.000944263784526762"
+        iyy="3.20155839115241"
+        iyz="-0.00605653011452777"
+        izz="6.25893970654864" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://lexium_digital_twin/meshes/workcell/workcell_base.STL"/>
+      </geometry>
+      <material name="workcell_gray">
+        <color rgba="0.5 0.5 0.5 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://lexium_digital_twin/meshes/workcell/workcell_base.STL"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="camera_link">
+    <inertial>
+      <origin
+        xyz="-0.0261553562131089 5.81756864903582E-14 -2.03259631348374E-12"
+        rpy="0 0 0" />
+      <mass
+        value="0.208183590746283" />
+      <inertia
+        ixx="0.000146011574259647"
+        ixy="-1.96308214934927E-20"
+        ixz="6.63835454985053E-21"
+        iyy="0.000142601175857491"
+        iyz="1.9888115997891E-19"
+        izz="9.61968253230847E-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://lexium_digital_twin/meshes/workcell/camera_link.STL"/>
+      </geometry>
+      <material name="camera_blue">
+        <color rgba="0 0 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://lexium_digital_twin/meshes/workcell/camera_link.STL"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="camera_joint" type="fixed">
+    <parent link="workcell_base"/>
+    <child link="camera_link"/>
+    <origin
+      xyz="0.153133524441864 -0.463083524449161 0.793199999998521"
+      rpy="1.57079632679489 1.5707963267949 0" />
+  </joint>
+
+  <link name="rail_link">
+    <inertial>
+      <origin
+        xyz="-0.000117808942896039 -0.0179831698691021 0.0971874048464669"
+        rpy="0 0 0" />
+      <mass
+        value="0.118729506771488" />
+      <inertia
+        ixx="6.37269671151434E-05"
+        ixy="-4.27455800507685E-07"
+        ixz="-1.29669929710389E-06"
+        iyy="0.000314201230355775"
+        iyz="1.47637625343348E-07"
+        izz="0.000252002191584158" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://lexium_digital_twin/meshes/workcell/rail_link.STL"/>
+      </geometry>
+      <material name="slider_red">
+        <color rgba="1 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://lexium_digital_twin/meshes/workcell/rail_link.STL"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="rail_joint" type="prismatic">
+    <parent link="workcell_base"/>
+    <child link="rail_link"/>
+    <origin xyz="0.000133524441080477 0.420366486211468 0.0164500000000002" rpy="-1.5707963267949 0 0" />
+    <axis xyz="0 0 -1" />
+    <limit lower="0.04" upper="-0.35" effort="50.0" velocity="0.1" />
+  </joint>
+
+  <link name="piston_link">
+    <inertial>
+      <origin
+        xyz="-0.00888952985745639 1.39053473392696E-09 0.117613409550567"
+        rpy="0 0 0" />
+      <mass
+        value="0.384921288029059" />
+      <inertia
+        ixx="0.0016727716162737"
+        ixy="-8.39209438231519E-09"
+        ixz="3.88905986638684E-06"
+        iyy="0.00125653371157422"
+        iyz="-7.84078391777094E-11"
+        izz="0.000623310539968176" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://lexium_digital_twin/meshes/workcell/piston_link.STL"/>
+      </geometry>
+      <material name="piston_blue">
+        <color rgba="0 0 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://lexium_digital_twin/meshes/workcell/piston_link.STL"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="piston_joint" type="prismatic">
+    <parent link="workcell_base"/>
+    <child link="piston_link"/>
+    <origin xyz="0.00013352444107879 0.661318697311832 0.411" rpy="3.14159265358979 0 1.57079632679489" />
+    <axis xyz="0 0 -1" />
+    <limit lower="-0.135" upper="0.135" effort="50.0" velocity="0.1" />
+  </joint>
+
+  <xacro:include filename="$(find lexium_digital_twin)/urdf/Lexium_Cobot_L03S_3D-simpl.SLDASM.urdf"/>
+
+  <joint name="workcell_to_arm" type="fixed">
+    <parent link="workcell_base"/>
+    <child link="base_link"/>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+  </joint>
+
+</robot>
