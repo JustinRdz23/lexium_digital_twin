@@ -21,7 +21,7 @@ class LexiumBridge(Node):
         )
 
         self.client = ModbusTcpClient(
-            host='10.5.5.100',
+            host='192.168.1.252',
             port=6502
         )
 

@@ -2,6 +2,7 @@ import ssl
 import socket
 import json
 import time
+from turtle import pos
 
 # --- Configuration ---
 HOST = '192.168.1.252'
@@ -9,8 +10,8 @@ PORT = 10001
 DO6_INDEX = 5
 IO_TYPE_CABINET = 0
 
-MOTION_TIMEOUT    = 20.0   # Max seconds to wait for any single move to complete
-ARRIVE_TOLERANCE  = 0.15   # Degrees — how close counts as "arrived"
+MOTION_TIMEOUT    = 7.5   # Max seconds to wait for any single move to complete
+ARRIVE_TOLERANCE  = 0.50   # Degrees — how close counts as "arrived"
 POLL_INTERVAL     = 0.05   # Seconds between position polls (20 Hz)
 RELEASE_HOLD_TIME = 1.2    # Seconds to hold magnet OFF before re-energizing after a drop
 
@@ -25,13 +26,18 @@ ctx.verify_mode    = ssl.CERT_NONE
 # ---------------------------------------------------------------------------
 
 def send_command(cmd_dict):
-    """Send one JSON command, return parsed response or None on failure."""
     try:
         with socket.create_connection((HOST, PORT), timeout=5) as raw:
             with ctx.wrap_socket(raw) as s:
                 s.send((json.dumps(cmd_dict) + "\n").encode())
-                response = s.recv(4096).decode()
+
+                response = s.recv(4096).decode().strip()
+
+                if not response:
+                    return None
+
                 return json.loads(response)
+
     except Exception as e:
         print(f"   [COMMS ERROR] {e}")
         return None
@@ -96,21 +102,26 @@ def wait_for_arrival(target_pos, timeout=MOTION_TIMEOUT, tolerance=ARRIVE_TOLERA
     return False
 
 
-def move_to(position, speed=5.0, accel=5.0):
-    """Send joint_move and block until the arm physically arrives."""
+def move_to(position, motion="joint", speed=100, accel=10.0):
+    """Send either joint_move or line_move and block until arrival."""
+
     packet = {
-        "cmdName":       "joint_move",
-        "relFlag":       0,
+        "cmdName": "joint_move" if motion == "joint" else "linear_move",
+        "relFlag": 0,
         "jointPosition": position,
-        "speed":         speed,
-        "accel":         accel
+        "speed": speed,
+        "accel": accel
     }
+
     reply = send_command(packet)
-    print(f"   [MOVE CMD] {reply}")
+
+    print(f"   [{motion.upper()} MOVE CMD] {reply}")
 
     arrived = wait_for_arrival(position)
+
     if not arrived:
         print("   [WARNING] Motion timeout — arm may not have fully arrived. Proceeding.")
+
     return arrived
 
 
@@ -131,122 +142,228 @@ def move_to(position, speed=5.0, accel=5.0):
 #                 RELEASE_HOLD_TIME, then turn magnet ON again before moving away
 # ---------------------------------------------------------------------------
 
+
 routine_steps = [
     {
-        "name":       "HOME",
-        "position":   [0.0, 90.0, 0.0, 90.0, 0.0, 0.0],
-        "action":     None,
+        "name": "HOME",
+        "position": [0.0, 36.92, 88.02, 146.84, -89.96, 0.0],
+        "motion": "joint",
+        "action": None,
         "post_delay": None
     },
     {
-        "name":       "ABOVE CONVEYOR",
-        "position":   [39.2580, 67.3787, -40.7220, 60.8752, 88.3291, -0.5988],
-        "action":     None,
+        "name": "ABOVE CONVEYOR",
+        "position": [-113.03, 114.85, 32.04, 123.23, -91.64, 0.04],
+        "motion": "joint",
+        "action": None,
         "post_delay": None
     },
     {
-        "name":       "PICK CAFI 1",
-        "position":   [47.2740, 57.7760, -77.5513, 107.2994, 88.2996, -0.0096],
-        "action":     "pick",    # Magnet already ON; part is now acquired
+        "name": "PICK CAFI 1",
+        "position": [-108.61, 123.88, 75.75, 72.36, -87.95, 0.05],
+        "motion": "joint",
+        "action": "pick",
         "post_delay": None
     },
     {
-        "name":       "ABOVE CONVEYOR (REPEAT)",
-        "position":   [39.2580, 67.3787, -40.7220, 60.8752, 88.3291, -0.5988],
-        "action":     None,
+        "name": "ABOVE CONVEYOR (REPEAT)",
+        "position": [-113.03, 114.85, 32.04, 123.23, -91.64, 0.04],
+        "motion": "joint",
+        "action": "pick",
         "post_delay": None
     },
     {
-        "name":       "NEW TRANSITION POINT",
-        "position":   [-67.8441, 89.5120, -46.3201, 46.4578, 87.3110, 24.4764],
-        "action":     None,
+        "name": "ABOVE RIVETING",
+        "position": [-245.51, 114.37, 3.31, 154.06, -88.80, 42.96],
+        "motion": "joint",
+        "action": "pick",
         "post_delay": None
     },
     {
-        "name":       "ABOVE RIVETING",
-        "position":   [-91.0336, 68.1251, -40.0538, 64.1423, 86.3255, 46.0431],
-        "action":     None,
+        "name": "RIVETING FIXTURE",
+        "position": [-253.14, 116.89, 79.58, 78.87, -90.02, 35.68],
+        "motion": "joint",
+        "action": "drop",
         "post_delay": None
     },
     {
-        "name":       "RIVETING FIXTURE",
-        "position":   [-99.7945, 61.4152, -81.0583, 108.1301, 90.4883, 35.0759],
-        "action":     "drop",    # Place part into riveting fixture
+        "name": "ABOVE RIVETING (POST PLACE)",
+        "position": [-245.51, 114.37, 3.31, 154.06, -88.80, 42.96],
+        "motion": "joint",
+        "action": None,
+        "post_delay": 20.0
+    },
+    {
+        "name": "PICK RIVETING", #the error is most likely here
+        "position": [-253.14, 119.27, 79.96, 78.15, -90.03, 35.68],
+        "motion": "joint",
+        "action": "pick",
         "post_delay": None
     },
     {
-        # Wait here while secondary riveting system fires
-        "name":       "ABOVE RIVETING (POST PLACE)",
-        "position":   [-99.8021, 100.4385, -81.0562, 69.5977, 91.4784, 35.0766],
-        "action":     None,
-        "post_delay": 10.0       # 10-second dwell for riveting operation
-    },
-    {
-        "name":       "PICK RIVETING",
-        "position":   [-99.7945, 61.4152, -81.0583, 108.1301, 90.4883, 35.0759],
-        "action":     "pick",    # Re-acquire the part after riveting
+        "name": "ABOVE RIVETING (POST PLACE - REPEAT)",
+        "position": [-245.51, 114.37, 3.31, 154.06, -88.80, 42.96],
+        "motion": "joint",
+        "action": "pick",
         "post_delay": None
     },
     {
-        "name":       "ABOVE RIVETING (POST PLACE - REPEAT)",
-        "position":   [-99.8021, 100.4385, -81.0562, 69.5977, 91.4784, 35.0766],
-        "action":     None,
+        "name": "ABOVE INSPECTION",
+        "position": [-54.34, 122.20, 1.25, 145.10, -87.93, 51.79],
+        "motion": "joint",
+        "action": None,
         "post_delay": None
     },
     {
-        "name":       "ABOVE INSPECTION",
-        "position":   [-267.7562, 100.4268, -81.0590, 69.5977, 91.4674, 35.0766],
-        "action":     None,
+        "name": "PLACE INSPECTION",
+        "position": [-56.42, 112.79, 55.79, 104.16, -84.41, 52.49],
+        "motion": "joint",
+        "action": "drop",
         "post_delay": None
     },
     {
-        "name":       "PLACE INSPECTION",
-        "position":   [-263.8775, 68.2913, -57.9142, 75.4803, 92.8694, 35.1171],
-        "action":     "drop",    # Place part at inspection station
+        "name": "ABOVE INSPECTION (AFTER)",
+        "position": [-55.31, 122.20, 1.25, 145.10, -87.93, 52.49],
+        "motion": "joint",
+        "action": None,
         "post_delay": None
     },
     {
-        "name":       "ABOVE INSPECTION (AFTER)",
-        "position":   [-263.9057, 109.3211, -57.8943, 39.3386, 92.8701, 35.1151],
-        "action":     None,
+        "name": "PICK INSPECTION",
+        "position": [-55.54, 107.21, 70.20, 93.15, -87.08, 44.09],
+        "motion": "joint",
+        "action": "pick",
         "post_delay": None
     },
     {
-        "name":       "PICK INSPECTION",
-        "position":   [-263.8775, 68.2913, -57.9142, 75.4803, 92.8694, 35.1171],
-        "action":     "pick",    # Re-acquire after inspection
+        "name": "ABOVE INSPECTION (ONCE MORE)",
+        "position": [-57.23, 108.59, 44.19, 115.14, -86.17, 44.08],
+        "motion": "joint",
+        "action": None,
         "post_delay": None
     },
     {
-        "name":       "ABOVE BINS",
-        "position":   [-268.3204, 57.2877, -16.2568, 65.2655, 95.8679, 35.1206],
-        "action":     None,
+        "name": "ABOVE BINS PASS",
+        "position": [-72.83, 145.62, 6.29, 110.98, -85.72, 26.99],
+        "motion": "joint",
+        "action": "drop",
         "post_delay": None
     },
     {
-        "name":       "PASS",
-        "position":   [-274.0567, 45.0818, -16.2815, 85.5217, 92.8021, 35.1199],
-        "action":     "drop",    # Sort to pass bin
+        "name": "HOME",
+        "position": [0.0, 36.92, 88.02, 146.84, -89.96, 0.0],
+        "motion": "joint",
+        "action": None,
+        "post_delay": None
+    },
+        {
+        "name": "ABOVE CONVEYOR",
+        "position": [-113.03, 114.85, 32.04, 123.23, -91.64, 0.04],
+        "motion": "joint",
+        "action": None,
         "post_delay": None
     },
     {
-        # NOTE: In the current routine the arm always goes to PASS.
-        # If inspection logic is added later, SCRAP would be a conditional
-        # branch here instead. For now it is kept in the step list but
-        # never reached in normal flow.
-        "name":       "SCRAP",
-        "position":   [-263.8521, 42.1101, -15.2974, 84.6024, 110.9360, 35.1213],
-        "action":     "drop",
+        "name": "PICK CAFI 1",
+        "position": [-108.61, 123.88, 75.75, 72.36, -87.95, 0.05],
+        "motion": "joint",
+        "action": "pick",
         "post_delay": None
     },
     {
-        "name":       "FINAL HOME",
-        "position":   [0.0, 90.0, 0.0, 90.0, 0.0, 0.0],
-        "action":     None,
+        "name": "ABOVE CONVEYOR (REPEAT)",
+        "position": [-113.03, 114.85, 32.04, 123.23, -91.64, 0.04],
+        "motion": "joint",
+        "action": "pick",
         "post_delay": None
-    }
-]
+    },
+    {
+        "name": "ABOVE RIVETING",
+        "position": [-245.51, 114.37, 3.31, 154.06, -88.80, 42.96],
+        "motion": "joint",
+        "action": "pick",
+        "post_delay": None
+    },
+    {
+        "name": "RIVETING FIXTURE",
+        "position": [-253.14, 116.89, 79.58, 78.87, -90.02, 35.68],
+        "motion": "joint",
+        "action": "drop",
+        "post_delay": None
+    },
+    {
+        "name": "ABOVE RIVETING (POST PLACE)",
+        "position": [-245.51, 114.37, 3.31, 154.06, -88.80, 42.96],
+        "motion": "joint",
+        "action": None,
+        "post_delay": 16.0
+    },
+    {
+        "name": "PICK RIVETING",
+        "position": [-253.14, 119.27, 79.96, 78.15, -90.03, 35.68],
+        "motion": "joint",
+        "action": "pick",
+        "post_delay": None
+    },
+    {
+        "name": "ABOVE RIVETING (POST PLACE - REPEAT)",
+        "position": [-245.51, 114.37, 3.31, 154.06, -88.80, 42.96],
+        "motion": "joint",
+        "action": "pick",
+        "post_delay": None
+    },
+    {
+        "name": "ABOVE INSPECTION",
+        "position": [-54.34, 122.20, 1.25, 145.10, -87.93, 51.79],
+        "motion": "joint",
+        "action": "pick",
+        "post_delay": None
+    },
+    {
+        "name": "PLACE INSPECTION",
+        "position": [-56.42, 112.79, 55.79, 104.16, -84.41, 52.49],
+        "motion": "joint",
+        "action": "drop",
+        "post_delay": None
+    },
+    {
+        "name": "ABOVE INSPECTION (AFTER)",
+        "position": [-55.31, 122.20, 1.25, 145.10, -87.93, 52.49],
+        "motion": "joint",
+        "action": None,
+        "post_delay": None
+    },
+    {
+        "name": "PICK INSPECTION",
+        "position": [-55.54, 107.21, 70.20, 93.15, -87.08, 44.09],
+        "motion": "joint",
+        "action": "pick",
+        "post_delay": None
+    },
+    {
+        "name": "ABOVE INSPECTION (ONCE MORE)",
+        "position": [-57.23, 108.59, 44.19, 115.14, -86.17, 44.08],
+        "motion": "joint",
+        "action": "pick",
+        "post_delay": None
+    },
+    {
+        "name": "ABOVE BINS FAIL",
+        "position": [-57.56, 147.53, 6.30, 112.01, -85.42, 38.48],
+        "motion": "joint",
+        "action": "drop",
+        "post_delay": None
+    },
+    {
+        "name": "HOME",
+        "position": [0.0, 36.92, 88.02, 146.84, -89.96, 0.0],
+        "motion": "joint",
+        "action": None,
+        "post_delay": None
+    },
 
+
+]
 
 # ---------------------------------------------------------------------------
 # Main sequencer
@@ -276,7 +393,8 @@ def run_routine():
         print(f"\n[{i:02d}/{total}] {name}")
 
         # --- Command the move and block until physically arrived ---
-        move_to(pos)
+        motion = step.get("motion", "joint")
+        move_to(pos, motion=motion)
 
         # --- Magnet action on arrival ---
         if action == "pick":

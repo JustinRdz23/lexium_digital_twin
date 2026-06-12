@@ -25,6 +25,7 @@ setup(
     entry_points={
     'console_scripts': [
         'bridge_lexium = lexium_modbus_bridge.bridge_lexium:main',
+        'bridge_lexium_full = lexium_modbus_bridge.bridge_lexium_full:main',
         ],
     },
 )
