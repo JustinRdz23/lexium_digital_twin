@@ -5,3 +5,15 @@ log/
 __pycache__/
 *.pyc
 *.egg-info/
+
+# Third-party dependencies
+src/moveit2/
+src/moveit2_tutorials/
+src/moveit_msgs/
+src/moveit_resources/
+src/moveit_task_constructor/
+src/moveit_visual_tools/
+src/ros2_kortex/
+src/ros2_robotiq_gripper/
+src/rviz_visual_tools/
+src/serial/
