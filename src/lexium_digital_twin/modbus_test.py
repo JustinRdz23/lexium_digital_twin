@@ -2,7 +2,7 @@ from pymodbus.client import ModbusTcpClient
 import struct
 import time
 
-client = ModbusTcpClient("10.5.5.100", port=6502)
+client = ModbusTcpClient("192.168.1.252", port=6502)
 
 if not client.connect():
     print("Connection failed")

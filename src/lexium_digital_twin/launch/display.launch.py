@@ -40,10 +40,10 @@ def generate_launch_description():
             arguments=['-d', rviz_config]
         ),
 # Uncomment to test without hardware
-        Node(
-            package='joint_state_publisher_gui',
-            executable='joint_state_publisher_gui',
-            output='screen',
-            parameters=[{'robot_description': robot_description}]
-        )
+        # Node(
+        #     package='joint_state_publisher_gui',
+        #     executable='joint_state_publisher_gui',
+        #     output='screen',
+        #     parameters=[{'robot_description': robot_description}]
+        # )
     ])
